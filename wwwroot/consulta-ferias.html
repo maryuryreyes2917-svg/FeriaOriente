@@ -1,0 +1,343 @@
+﻿
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta de ferias | FeriaOriente</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: #fff7f7;
+            color: #604b52;
+        }
+
+        header {
+            background: #f4cbd2;
+            padding: 22px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+            header h1 {
+                color: #9b6575;
+            }
+
+        .boton {
+            background: #c98799;
+            color: white;
+            border: none;
+            border-radius: 9px;
+            padding: 10px 16px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 12px;
+        }
+
+            .boton:hover {
+                background: #b87588;
+            }
+
+        .contenedor {
+            max-width: 1150px;
+            margin: 35px auto;
+            padding: 0 20px;
+        }
+
+        .presentacion, .seccion {
+            background: white;
+            padding: 28px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 18px #a66d7d18;
+        }
+
+        h2 {
+            color: #a66d7d;
+            margin-bottom: 15px;
+        }
+
+        .lista {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 18px;
+        }
+
+        .tarjeta {
+            background: #fff7f7;
+            border: 1px solid #f1dce1;
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+            .tarjeta h3 {
+                color: #9b6575;
+                margin-bottom: 10px;
+            }
+
+            .tarjeta p {
+                margin: 7px 0;
+                line-height: 1.5;
+            }
+
+        .mensaje {
+            color: #927c83;
+            padding: 10px 0;
+        }
+
+        .participantes {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #f1dce1;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #927c83;
+        }
+
+        @media(max-width: 600px) {
+            header {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>FeriaOriente</h1>
+        <a class="boton" href="index.html">Volver al inicio</a>
+    </header>
+
+    <main class="contenedor">
+
+        <section class="presentacion">
+            <h2>Consulta de ferias</h2>
+            <p>
+                Conoce las ferias del Oriente Antioqueño, descubre sus
+                emprendimientos participantes y consulta las actividades
+                que se han realizado en nuestra región.
+            </p>
+        </section>
+
+        <section class="seccion">
+            <h2>Ferias disponibles</h2>
+            <div id="listaFerias" class="lista">
+                <p class="mensaje">Cargando ferias...</p>
+            </div>
+        </section>
+
+        <section class="seccion">
+            <h2>Historial de ferias</h2>
+            <div id="listaHistorial" class="lista">
+                <p class="mensaje">Cargando historial...</p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        FeriaOriente · Talento y emprendimiento regional
+    </footer>
+
+    <script>
+        async function consultar(url) {
+            const respuesta = await fetch(url);
+
+            if (!respuesta.ok) {
+                throw new Error("No se pudo consultar la información.");
+            }
+
+            return await respuesta.json();
+        }
+
+        function crearElemento(etiqueta, texto, clase) {
+            const elemento = document.createElement(etiqueta);
+            elemento.textContent = texto;
+
+            if (clase) {
+                elemento.className = clase;
+            }
+
+            return elemento;
+        }
+
+        async function mostrarParticipantes(feriaId, contenedor) {
+            const zona = document.createElement("div");
+            zona.className = "participantes";
+
+            zona.appendChild(
+                crearElemento("strong", "Emprendimientos participantes")
+            );
+
+            const resultado = document.createElement("div");
+            resultado.className = "mensaje";
+            resultado.textContent = "Cargando participantes...";
+
+            zona.appendChild(resultado);
+            contenedor.appendChild(zona);
+
+            try {
+                const participantes = await consultar(
+                    `/api/Feria/${feriaId}/participantes`
+                );
+
+                resultado.innerHTML = "";
+
+                if (!Array.isArray(participantes) ||
+                    participantes.length === 0) {
+                    resultado.textContent =
+                        "Todavía no hay participantes registrados.";
+                    return;
+                }
+
+                participantes.forEach(persona => {
+                    const nombre =
+                        `${persona.nombre || persona.Nombre || ""} ` +
+                        `${persona.apellido || persona.Apellido || ""}`;
+
+                    resultado.appendChild(
+                        crearElemento("p", "• " + nombre.trim())
+                    );
+                });
+
+            } catch {
+                resultado.textContent =
+                    "No fue posible cargar los participantes.";
+            }
+        }
+
+        function mostrarFerias(datos, contenedor, incluirParticipantes) {
+            contenedor.innerHTML = "";
+
+            if (!Array.isArray(datos) || datos.length === 0) {
+                contenedor.appendChild(
+                    crearElemento(
+                        "p",
+                        "No hay ferias registradas en este momento.",
+                        "mensaje"
+                    )
+                );
+                return;
+            }
+
+            datos.forEach(feria => {
+                const tarjeta = document.createElement("article");
+                tarjeta.className = "tarjeta";
+
+                tarjeta.appendChild(
+                    crearElemento(
+                        "h3",
+                        feria.nombre || feria.Nombre || "Feria sin nombre"
+                    )
+                );
+
+                tarjeta.appendChild(
+                    crearElemento(
+                        "p",
+                        feria.descripcion || feria.Descripcion ||
+                        "Sin descripción."
+                    )
+                );
+
+                tarjeta.appendChild(
+                    crearElemento(
+                        "p",
+                        "Municipio: " +
+                        (feria.municipio || feria.Municipio || "No especificado")
+                    )
+                );
+
+                tarjeta.appendChild(
+                    crearElemento(
+                        "p",
+                        "Lugar: " +
+                        (feria.lugar || feria.Lugar || "No especificado")
+                    )
+                );
+
+                tarjeta.appendChild(
+                    crearElemento(
+                        "p",
+                        "Fecha de inicio: " +
+                        formatearFecha(feria.fechaInicio || feria.FechaInicio)
+                    )
+                );
+
+                tarjeta.appendChild(
+                    crearElemento(
+                        "p",
+                        "Fecha de finalización: " +
+                        formatearFecha(feria.fechaFin || feria.FechaFin)
+                    )
+                );
+
+                if (incluirParticipantes) {
+                    mostrarParticipantes(
+                        feria.id || feria.Id,
+                        tarjeta
+                    );
+                }
+
+                contenedor.appendChild(tarjeta);
+            });
+        }
+
+        function formatearFecha(fecha) {
+            if (!fecha) return "No especificada";
+
+            return new Date(fecha).toLocaleString("es-CO", {
+                dateStyle: "medium",
+                timeStyle: "short"
+            });
+        }
+
+        async function cargarFerias() {
+            try {
+                const ferias = await consultar("/api/Feria/publicas");
+
+                mostrarFerias(
+                    ferias,
+                    document.getElementById("listaFerias"),
+                    true
+                );
+
+            } catch {
+                document.getElementById("listaFerias").textContent =
+                    "No fue posible cargar las ferias disponibles.";
+            }
+
+            try {
+                const historial = await consultar("/api/Feria/historial");
+
+                mostrarFerias(
+                    historial,
+                    document.getElementById("listaHistorial"),
+                    false
+                );
+
+            } catch {
+                document.getElementById("listaHistorial").textContent =
+                    "No fue posible cargar el historial de ferias.";
+            }
+        }
+
+        cargarFerias();
+    </script>
+
+</body>
+</html>

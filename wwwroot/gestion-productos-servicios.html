@@ -1,0 +1,620 @@
+﻿
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FeriaOriente | Productos y servicios</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: #fff7f7;
+            color: #704c57;
+        }
+
+        header {
+            background: linear-gradient(135deg, #f4cbd2, #f8e1e3);
+            padding: 25px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+            header h1 {
+                color: #9b6575;
+                font-size: 27px;
+            }
+
+            header a {
+                text-decoration: none;
+                color: #704c57;
+                font-weight: bold;
+            }
+
+        main {
+            max-width: 1100px;
+            margin: 35px auto;
+            padding: 0 20px;
+        }
+
+        h2 {
+            color: #9b6575;
+            margin-bottom: 12px;
+        }
+
+        .introduccion {
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .seccion {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px #0000000d;
+        }
+
+        .formulario {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .campo {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+            .campo.completo {
+                grid-column: 1 / -1;
+            }
+
+        label {
+            font-weight: 600;
+        }
+
+        input, textarea {
+            padding: 12px;
+            border: 1px solid #e8c5ce;
+            border-radius: 9px;
+            outline: none;
+            color: #704c57;
+            width: 100%;
+        }
+
+            input:focus, textarea:focus {
+                border-color: #c98799;
+            }
+
+        textarea {
+            resize: vertical;
+            min-height: 85px;
+        }
+
+        button {
+            border: none;
+            padding: 11px 18px;
+            border-radius: 9px;
+            background: #c98799;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+            button:hover {
+                background: #b87588;
+            }
+
+            button.secundario {
+                background: #9b9b9b;
+            }
+
+            button.eliminar {
+                background: #b85c68;
+            }
+
+        .botones {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .lista {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 18px;
+            margin-top: 20px;
+        }
+
+        .tarjeta {
+            border: 1px solid #f0d5dc;
+            background: #fffafa;
+            border-radius: 13px;
+            padding: 20px;
+        }
+
+            .tarjeta h3 {
+                color: #9b6575;
+                margin-bottom: 10px;
+            }
+
+            .tarjeta p {
+                margin: 7px 0;
+                line-height: 1.4;
+                overflow-wrap: anywhere;
+            }
+
+        .mensaje {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        .vacio {
+            color: #987d85;
+            padding: 10px 0;
+        }
+
+        .oculto {
+            display: none;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #987d85;
+        }
+
+        @media (max-width: 600px) {
+            .formulario {
+                grid-template-columns: 1fr;
+            }
+
+            .campo.completo {
+                grid-column: auto;
+            }
+
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>FeriaOriente</h1>
+        <a href="panel-emprendedor.html">← Volver al panel</a>
+    </header>
+
+    <main>
+
+        <div class="introduccion">
+            <h2>Gestión de productos y servicios</h2>
+            <p>
+                Administra los productos y servicios de tu emprendimiento.
+                Puedes registrarlos, consultarlos, editarlos y eliminarlos.
+            </p>
+        </div>
+
+        <!-- PRODUCTOS -->
+        <section class="seccion">
+            <h2>Mis productos</h2>
+
+            <form id="formProducto" class="formulario">
+                <div class="campo">
+                    <label for="productoNombre">Nombre del producto</label>
+                    <input id="productoNombre" type="text" required>
+                </div>
+
+                <div class="campo">
+                    <label for="productoPrecio">Precio</label>
+                    <input id="productoPrecio" type="number" min="0" step="0.01" required>
+                </div>
+
+                <div class="campo">
+                    <label for="productoStock">Cantidad disponible</label>
+                    <input id="productoStock" type="number" min="0" step="1" required>
+                </div>
+
+                <div class="campo completo">
+                    <label for="productoDescripcion">Descripción</label>
+                    <textarea id="productoDescripcion" required></textarea>
+                </div>
+
+                <div class="campo completo botones">
+                    <button id="guardarProducto" type="submit">Registrar producto</button>
+                    <button id="cancelarProducto" class="secundario oculto" type="button">
+                        Cancelar edición
+                    </button>
+                </div>
+            </form>
+
+            <p id="mensajeProducto" class="mensaje"></p>
+
+            <div id="listaProductos" class="lista">
+                <p class="vacio">Cargando productos...</p>
+            </div>
+        </section>
+
+        <!-- SERVICIOS -->
+        <section class="seccion">
+            <h2>Mis servicios</h2>
+
+            <form id="formServicio" class="formulario">
+                <div class="campo">
+                    <label for="servicioNombre">Nombre del servicio</label>
+                    <input id="servicioNombre" type="text" required>
+                </div>
+
+                <div class="campo">
+                    <label for="servicioPrecio">Precio</label>
+                    <input id="servicioPrecio" type="number" min="0" step="0.01" required>
+                </div>
+
+                <div class="campo completo">
+                    <label for="servicioDescripcion">Descripción</label>
+                    <textarea id="servicioDescripcion" required></textarea>
+                </div>
+
+                <div class="campo completo botones">
+                    <button id="guardarServicio" type="submit">Registrar servicio</button>
+                    <button id="cancelarServicio" class="secundario oculto" type="button">
+                        Cancelar edición
+                    </button>
+                </div>
+            </form>
+
+            <p id="mensajeServicio" class="mensaje"></p>
+
+            <div id="listaServicios" class="lista">
+                <p class="vacio">Cargando servicios...</p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        FeriaOriente | Impulsando los emprendimientos de nuestra región.
+    </footer>
+
+    <script>
+    const API = "https://localhost:7144/api/Emprendimiento";
+
+    const token = localStorage.getItem("tokenFeriaOriente");
+    const tipoCuenta = localStorage.getItem("tipoCuenta");
+
+    let productoEditando = null;
+    let servicioEditando = null;
+
+    if (!token || tipoCuenta !== "emprendedor") {
+        alert("Debes iniciar sesión como emprendedor.");
+        window.location.href = "login.html";
+    }
+
+    async function solicitar(ruta, metodo = "GET", datos = null) {
+        const opciones = {
+            method: metodo,
+            headers: {
+                "Authorization": "Bearer " + token
+            }
+        };
+
+        if (datos !== null) {
+            opciones.headers["Content-Type"] = "application/json";
+            opciones.body = JSON.stringify(datos);
+        }
+
+        const respuesta = await fetch(API + ruta, opciones);
+
+        const texto = await respuesta.text();
+
+        let resultado = null;
+
+        if (texto) {
+            try {
+                resultado = JSON.parse(texto);
+            } catch {
+                resultado = texto;
+            }
+        }
+
+        if (!respuesta.ok) {
+            const mensaje = resultado?.mensaje || resultado?.title ||
+                "No se pudo completar la operación.";
+            throw new Error(mensaje);
+        }
+
+        return resultado;
+    }
+
+    // =====================================
+    // PRODUCTOS
+    // =====================================
+
+    async function cargarProductos() {
+        const lista = document.getElementById("listaProductos");
+        lista.innerHTML = '<p class="vacio">Cargando productos...</p>';
+
+        try {
+            const productos = await solicitar("/mis-productos");
+
+            lista.innerHTML = "";
+
+            if (!Array.isArray(productos) || productos.length === 0) {
+                lista.innerHTML = '<p class="vacio">Todavía no tienes productos registrados.</p>';
+                return;
+            }
+
+            productos.forEach(producto => {
+                const tarjeta = document.createElement("article");
+                tarjeta.className = "tarjeta";
+
+                const titulo = document.createElement("h3");
+                titulo.textContent = producto.nombre;
+
+                const descripcion = document.createElement("p");
+                descripcion.textContent = producto.descripcion;
+
+                const precio = document.createElement("p");
+                precio.textContent = "Precio: $" + producto.precio;
+
+                const stock = document.createElement("p");
+                stock.textContent = "Disponibles: " + producto.stock;
+
+                const botones = document.createElement("div");
+                botones.className = "botones";
+
+                const editar = document.createElement("button");
+                editar.type = "button";
+                editar.textContent = "Editar";
+                editar.onclick = () => prepararEdicionProducto(producto);
+
+                const eliminar = document.createElement("button");
+                eliminar.type = "button";
+                eliminar.className = "eliminar";
+                eliminar.textContent = "Eliminar";
+                eliminar.onclick = () => eliminarProducto(producto.id);
+
+                botones.append(editar, eliminar);
+                tarjeta.append(titulo, descripcion, precio, stock, botones);
+                lista.appendChild(tarjeta);
+            });
+
+        } catch (error) {
+            lista.innerHTML = "";
+            mostrarMensaje("mensajeProducto", error.message);
+        }
+    }
+
+    document.getElementById("formProducto").addEventListener("submit", async function(evento) {
+        evento.preventDefault();
+
+        const datos = {
+            nombre: document.getElementById("productoNombre").value.trim(),
+            descripcion: document.getElementById("productoDescripcion").value.trim(),
+            precio: Number(document.getElementById("productoPrecio").value),
+            stock: Number(document.getElementById("productoStock").value)
+        };
+
+        if (datos.precio < 0 || datos.stock < 0) {
+            mostrarMensaje("mensajeProducto", "El precio y el stock no pueden ser negativos.");
+            return;
+        }
+
+        try {
+            if (productoEditando !== null) {
+                await solicitar("/mis-productos/" + productoEditando, "PUT", datos);
+                mostrarMensaje("mensajeProducto", "Producto actualizado correctamente.");
+            } else {
+                await solicitar("/mis-productos", "POST", datos);
+                mostrarMensaje("mensajeProducto", "Producto registrado correctamente.");
+            }
+
+            limpiarProducto();
+            await cargarProductos();
+
+        } catch (error) {
+            mostrarMensaje("mensajeProducto", error.message);
+        }
+    });
+
+    function prepararEdicionProducto(producto) {
+        productoEditando = producto.id;
+
+        document.getElementById("productoNombre").value = producto.nombre || "";
+        document.getElementById("productoDescripcion").value = producto.descripcion || "";
+        document.getElementById("productoPrecio").value = producto.precio ?? 0;
+        document.getElementById("productoStock").value = producto.stock ?? 0;
+
+        document.getElementById("guardarProducto").textContent = "Actualizar producto";
+        document.getElementById("cancelarProducto").classList.remove("oculto");
+
+        document.getElementById("formProducto").scrollIntoView({
+            behavior: "smooth"
+        });
+    }
+
+    async function eliminarProducto(id) {
+        if (!confirm("¿Estás seguro de que deseas eliminar este producto?")) {
+            return;
+        }
+
+        try {
+            await solicitar("/mis-productos/" + id, "DELETE");
+            mostrarMensaje("mensajeProducto", "Producto eliminado correctamente.");
+            limpiarProducto();
+            await cargarProductos();
+
+        } catch (error) {
+            mostrarMensaje("mensajeProducto", error.message);
+        }
+    }
+
+    function limpiarProducto() {
+        document.getElementById("formProducto").reset();
+        productoEditando = null;
+        document.getElementById("guardarProducto").textContent = "Registrar producto";
+        document.getElementById("cancelarProducto").classList.add("oculto");
+    }
+
+    document.getElementById("cancelarProducto").addEventListener("click", limpiarProducto);
+
+    // =====================================
+    // SERVICIOS
+    // =====================================
+
+    async function cargarServicios() {
+        const lista = document.getElementById("listaServicios");
+        lista.innerHTML = '<p class="vacio">Cargando servicios...</p>';
+
+        try {
+            const servicios = await solicitar("/mis-servicios");
+
+            lista.innerHTML = "";
+
+            if (!Array.isArray(servicios) || servicios.length === 0) {
+                lista.innerHTML = '<p class="vacio">Todavía no tienes servicios registrados.</p>';
+                return;
+            }
+
+            servicios.forEach(servicio => {
+                const tarjeta = document.createElement("article");
+                tarjeta.className = "tarjeta";
+
+                const titulo = document.createElement("h3");
+                titulo.textContent = servicio.nombre;
+
+                const descripcion = document.createElement("p");
+                descripcion.textContent = servicio.descripcion;
+
+                const precio = document.createElement("p");
+                precio.textContent = "Precio: $" + servicio.precio;
+
+                const botones = document.createElement("div");
+                botones.className = "botones";
+
+                const editar = document.createElement("button");
+                editar.type = "button";
+                editar.textContent = "Editar";
+                editar.onclick = () => prepararEdicionServicio(servicio);
+
+                const eliminar = document.createElement("button");
+                eliminar.type = "button";
+                eliminar.className = "eliminar";
+                eliminar.textContent = "Eliminar";
+                eliminar.onclick = () => eliminarServicio(servicio.id);
+
+                botones.append(editar, eliminar);
+                tarjeta.append(titulo, descripcion, precio, botones);
+                lista.appendChild(tarjeta);
+            });
+
+        } catch (error) {
+            lista.innerHTML = "";
+            mostrarMensaje("mensajeServicio", error.message);
+        }
+    }
+
+    document.getElementById("formServicio").addEventListener("submit", async function(evento) {
+        evento.preventDefault();
+
+        const datos = {
+            nombre: document.getElementById("servicioNombre").value.trim(),
+            descripcion: document.getElementById("servicioDescripcion").value.trim(),
+            precio: Number(document.getElementById("servicioPrecio").value)
+        };
+
+        if (datos.precio < 0) {
+            mostrarMensaje("mensajeServicio", "El precio no puede ser negativo.");
+            return;
+        }
+
+        try {
+            if (servicioEditando !== null) {
+                await solicitar("/mis-servicios/" + servicioEditando, "PUT", datos);
+                mostrarMensaje("mensajeServicio", "Servicio actualizado correctamente.");
+            } else {
+                await solicitar("/mis-servicios", "POST", datos);
+                mostrarMensaje("mensajeServicio", "Servicio registrado correctamente.");
+            }
+
+            limpiarServicio();
+            await cargarServicios();
+
+        } catch (error) {
+            mostrarMensaje("mensajeServicio", error.message);
+        }
+    });
+
+    function prepararEdicionServicio(servicio) {
+        servicioEditando = servicio.id;
+
+        document.getElementById("servicioNombre").value = servicio.nombre || "";
+        document.getElementById("servicioDescripcion").value = servicio.descripcion || "";
+        document.getElementById("servicioPrecio").value = servicio.precio ?? 0;
+
+        document.getElementById("guardarServicio").textContent = "Actualizar servicio";
+        document.getElementById("cancelarServicio").classList.remove("oculto");
+
+        document.getElementById("formServicio").scrollIntoView({
+            behavior: "smooth"
+        });
+    }
+
+    async function eliminarServicio(id) {
+        if (!confirm("¿Estás seguro de que deseas eliminar este servicio?")) {
+            return;
+        }
+
+        try {
+            await solicitar("/mis-servicios/" + id, "DELETE");
+            mostrarMensaje("mensajeServicio", "Servicio eliminado correctamente.");
+            limpiarServicio();
+            await cargarServicios();
+
+        } catch (error) {
+            mostrarMensaje("mensajeServicio", error.message);
+        }
+    }
+
+    function limpiarServicio() {
+        document.getElementById("formServicio").reset();
+        servicioEditando = null;
+        document.getElementById("guardarServicio").textContent = "Registrar servicio";
+        document.getElementById("cancelarServicio").classList.add("oculto");
+    }
+
+    document.getElementById("cancelarServicio").addEventListener("click", limpiarServicio);
+
+    // =====================================
+    // MENSAJES Y CARGA INICIAL
+    // =====================================
+
+    function mostrarMensaje(id, mensaje) {
+        document.getElementById(id).textContent = mensaje;
+    }
+
+    if (token && tipoCuenta === "emprendedor") {
+        cargarProductos();
+        cargarServicios();
+    }
+    </script>
+
+</body>
+</html>

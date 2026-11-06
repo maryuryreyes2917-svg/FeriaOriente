@@ -1,0 +1,272 @@
+﻿
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro | FeriaOriente</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #fff7f7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 15px;
+        }
+
+        .contenedor {
+            display: flex;
+            width: 950px;
+            max-width: 100%;
+            min-height: 620px;
+            background: #fffdfd;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(166, 109, 125, 0.13);
+        }
+
+        .panel {
+            width: 40%;
+            background: linear-gradient(145deg, #f4cbd2, #f8e1e3);
+            color: #704c57;
+            padding: 45px 35px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+            .panel h1 {
+                font-size: 35px;
+                margin-bottom: 20px;
+                color: #9b6575;
+            }
+
+            .panel p {
+                line-height: 1.7;
+                font-size: 16px;
+            }
+
+        .formulario {
+            width: 60%;
+            padding: 45px;
+        }
+
+            .formulario h2 {
+                color: #a66d7d;
+                font-size: 29px;
+                margin-bottom: 8px;
+            }
+
+            .formulario > p {
+                color: #8b777c;
+                margin-bottom: 20px;
+            }
+
+        .campo {
+            margin-bottom: 13px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            color: #70575e;
+            font-weight: 600;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ebcbd2;
+            border-radius: 8px;
+            font-size: 15px;
+            background: #fffdfd;
+            outline: none;
+        }
+
+            input:focus {
+                border-color: #cc91a1;
+                box-shadow: 0 0 0 3px #f8e4e9;
+            }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 10px;
+            background: #c98799;
+            color: white;
+            border: none;
+            border-radius: 9px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+            button:hover {
+                background: #b87588;
+            }
+
+            button:disabled {
+                opacity: 0.7;
+                cursor: not-allowed;
+            }
+
+        .enlace {
+            margin-top: 18px;
+            text-align: center;
+            color: #8b777c;
+        }
+
+            .enlace a {
+                color: #b87588;
+                text-decoration: none;
+                font-weight: bold;
+            }
+
+                .enlace a:hover {
+                    text-decoration: underline;
+                }
+
+        #mensaje {
+            margin-top: 15px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        @media(max-width: 750px) {
+            .contenedor {
+                flex-direction: column;
+            }
+
+            .panel, .formulario {
+                width: 100%;
+                padding: 30px 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="contenedor">
+
+        <section class="panel">
+            <h1>FeriaOriente</h1>
+            <p>
+                Haz parte de nuestra comunidad de emprendedores.
+                Da a conocer tus productos y servicios y conecta
+                con nuevas oportunidades en el Oriente Antioqueño.
+            </p>
+        </section>
+
+        <section class="formulario">
+
+            <h2>Crear una cuenta</h2>
+            <p>Registra tus datos para unirte a nuestra comunidad.</p>
+
+            <form id="formularioRegistro">
+
+                <div class="campo">
+                    <label>Nombre</label>
+                    <input type="text" id="nombre" required>
+                </div>
+
+                <div class="campo">
+                    <label>Apellido</label>
+                    <input type="text" id="apellido" required>
+                </div>
+
+                <div class="campo">
+                    <label>Correo electrónico</label>
+                    <input type="email" id="correo" required>
+                </div>
+
+                <div class="campo">
+                    <label>Teléfono</label>
+                    <input type="tel" id="telefono" required>
+                </div>
+
+                <div class="campo">
+                    <label>Contraseña</label>
+                    <input type="password" id="contrasena" required minlength="6">
+                </div>
+
+                <button type="submit" id="btnRegistrar">
+                    Registrarme
+                </button>
+
+            </form>
+
+            <div id="mensaje"></div>
+
+            <div class="enlace">
+                ¿Ya tienes una cuenta?
+                <a href="login.html">Inicia sesión</a>
+            </div>
+
+            <div class="enlace">
+                <a href="index.html">Volver al inicio</a>
+            </div>
+
+        </section>
+
+    </div>
+
+    <script>
+            document.getElementById("formularioRegistro").addEventListener("submit", async function(e) {
+                e.preventDefault();
+
+                const mensaje = document.getElementById("mensaje");
+                const boton = document.getElementById("btnRegistrar");
+
+                const datos = {
+                    nombre: document.getElementById("nombre").value,
+                    apellido: document.getElementById("apellido").value,
+                    correo: document.getElementById("correo").value,
+                    telefono: document.getElementById("telefono").value,
+                    contrasena: document.getElementById("contrasena").value
+                };
+
+                boton.disabled = true;
+                boton.textContent = "Registrando...";
+                mensaje.textContent = "";
+
+                try {
+                    const respuesta = await fetch("/api/Auth/registrar", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(datos)
+                    });
+
+                    const resultado = await respuesta.json();
+
+                    if (!respuesta.ok) {
+                        throw new Error(resultado.mensaje || "No fue posible completar el registro.");
+                    }
+
+                    mensaje.style.color = "#43835a";
+                    mensaje.textContent = resultado.mensaje || "¡Registro exitoso!";
+
+                    document.getElementById("formularioRegistro").reset();
+
+                } catch (error) {
+                    mensaje.style.color = "#bd5265";
+                    mensaje.textContent = error.message;
+                } finally {
+                    boton.disabled = false;
+                    boton.textContent = "Registrarme";
+                }
+            });
+    </script>
+
+</body>
+</html>

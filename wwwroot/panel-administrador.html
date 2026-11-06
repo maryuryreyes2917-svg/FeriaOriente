@@ -1,0 +1,620 @@
+﻿
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel administrador | FeriaOriente</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: #fff7f7;
+            color: #704c57;
+        }
+
+        header {
+            background: linear-gradient(135deg, #f4cbd2, #f8e1e3);
+            padding: 25px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+            header h1 {
+                color: #9b6575;
+            }
+
+            header button, .boton {
+                background: #c98799;
+                color: white;
+                border: none;
+                padding: 11px 18px;
+                border-radius: 9px;
+                cursor: pointer;
+                font-weight: bold;
+            }
+
+                header button:hover, .boton:hover {
+                    background: #b87588;
+                }
+
+        main {
+            width: 90%;
+            max-width: 1150px;
+            margin: 35px auto;
+        }
+
+        h2 {
+            color: #9b6575;
+            margin-bottom: 18px;
+        }
+
+        .resumen {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 18px;
+            margin-bottom: 35px;
+        }
+
+        .tarjeta {
+            background: white;
+            padding: 22px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px #d9b9c033;
+        }
+
+            .tarjeta h3 {
+                color: #9b6575;
+                margin-bottom: 10px;
+            }
+
+        .numero {
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+        .seccion {
+            margin-bottom: 35px;
+        }
+
+        .formulario {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px #d9b9c033;
+            margin-bottom: 22px;
+        }
+
+        .campos {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .campo {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+            .campo.completo {
+                grid-column: 1 / -1;
+            }
+
+        label {
+            font-weight: 600;
+        }
+
+        input, textarea, select {
+            padding: 12px;
+            border: 1px solid #ebcbd2;
+            border-radius: 9px;
+            background: #fffafa;
+            color: #704c57;
+            width: 100%;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .acciones {
+            display: flex;
+            gap: 10px;
+            margin-top: 18px;
+            flex-wrap: wrap;
+        }
+
+        .secundario {
+            background: #d8b8c0;
+        }
+
+        .peligro {
+            background: #b96d78;
+        }
+
+        .lista {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 18px;
+        }
+
+        .elemento {
+            background: white;
+            padding: 20px;
+            border-radius: 14px;
+            box-shadow: 0 4px 15px #d9b9c033;
+        }
+
+            .elemento h3 {
+                color: #9b6575;
+                margin-bottom: 10px;
+            }
+
+            .elemento p {
+                margin: 7px 0;
+                overflow-wrap: anywhere;
+            }
+
+            .elemento .acciones button {
+                flex: 1;
+            }
+
+        .mensaje {
+            margin: 12px 0;
+            font-weight: 600;
+        }
+
+        .estado {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 5px 10px;
+            border-radius: 15px;
+            background: #f8e1e3;
+            color: #9b6575;
+        }
+
+        @media (max-width: 600px) {
+            .campos {
+                grid-template-columns: 1fr;
+            }
+
+            .campo.completo {
+                grid-column: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div>
+            <h1>FeriaOriente</h1>
+            <p>Panel de administración</p>
+        </div>
+
+        <button onclick="cerrarSesion()">Cerrar sesión</button>
+    </header>
+
+    <main>
+
+        <section class="resumen">
+            <div class="tarjeta">
+                <h3>Emprendedores registrados</h3>
+                <p class="numero" id="totalEmprendedores">0</p>
+            </div>
+
+            <div class="tarjeta">
+                <h3>Ferias registradas</h3>
+                <p class="numero" id="totalFerias">0</p>
+            </div>
+        </section>
+
+        <section class="seccion">
+            <h2>Gestión de ferias</h2>
+
+            <div class="formulario">
+                <h3 id="tituloFormulario">Registrar nueva feria</h3>
+
+                <form id="formularioFeria">
+
+                    <div class="campos">
+
+                        <div class="campo completo">
+                            <label for="nombre">Nombre de la feria</label>
+                            <input type="text" id="nombre" required>
+                        </div>
+
+                        <div class="campo completo">
+                            <label for="descripcion">Descripción</label>
+                            <textarea id="descripcion" required></textarea>
+                        </div>
+
+                        <div class="campo">
+                            <label for="fechaInicio">Fecha de inicio</label>
+                            <input type="datetime-local" id="fechaInicio" required>
+                        </div>
+
+                        <div class="campo">
+                            <label for="fechaFin">Fecha de finalización</label>
+                            <input type="datetime-local" id="fechaFin" required>
+                        </div>
+
+                        <div class="campo">
+                            <label for="lugar">Lugar</label>
+                            <input type="text" id="lugar" required>
+                        </div>
+
+                        <div class="campo">
+                            <label for="municipio">Municipio</label>
+                            <input type="text" id="municipio" required>
+                        </div>
+
+                        <div class="campo completo">
+                            <label for="estado">Estado</label>
+                            <select id="estado">
+                                <option value="true">Activa</option>
+                                <option value="false">Inactiva</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <div class="acciones">
+                        <button type="submit" class="boton" id="btnGuardar">
+                            Registrar feria
+                        </button>
+
+                        <button type="button" class="boton secundario"
+                                onclick="limpiarFormulario()">
+                            Cancelar
+                        </button>
+                    </div>
+
+                    <p class="mensaje" id="mensajeFeria"></p>
+
+                </form>
+            </div>
+
+            <h2>Ferias existentes</h2>
+            <div class="lista" id="listaFerias">
+                Cargando ferias...
+            </div>
+        </section>
+
+        <section class="seccion">
+            <h2>Emprendedores registrados</h2>
+            <div class="lista" id="listaEmprendedores">
+                Cargando emprendedores...
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+            const API = "https://localhost:7144/api";
+
+            const token = localStorage.getItem("tokenFeriaOriente");
+            const tipoCuenta = localStorage.getItem("tipoCuenta");
+
+            let feriaEditando = null;
+
+            if (!token || tipoCuenta !== "administrador") {
+                alert("Debes iniciar sesión como administrador.");
+                window.location.href = "login.html";
+            }
+
+            async function solicitar(url, opciones = {}) {
+
+                const respuesta = await fetch(API + url, {
+                    ...opciones,
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + token,
+                        ...opciones.headers
+                    }
+                });
+
+                const texto = await respuesta.text();
+
+                let datos = null;
+
+                if (texto) {
+                    try {
+                        datos = JSON.parse(texto);
+                    } catch {
+                        datos = texto;
+                    }
+                }
+
+                if (!respuesta.ok) {
+                    throw new Error(
+                        datos?.mensaje ||
+                        datos?.message ||
+                        datos ||
+                        "No se pudo completar la operación."
+                    );
+                }
+
+                return datos;
+            }
+
+            async function cargarEmprendedores() {
+
+                const lista = document.getElementById("listaEmprendedores");
+
+                try {
+                    const emprendedores = await solicitar(
+                        "/Emprendimiento/todos-los-emprendedores"
+                    );
+
+                    document.getElementById("totalEmprendedores").textContent =
+                        emprendedores.length;
+
+                    if (emprendedores.length === 0) {
+                        lista.textContent = "No hay emprendedores registrados.";
+                        return;
+                    }
+
+                    lista.innerHTML = "";
+
+                    emprendedores.forEach(emprendedor => {
+
+                        const tarjeta = document.createElement("div");
+                        tarjeta.className = "elemento";
+
+                        const nombre = document.createElement("h3");
+                        nombre.textContent =
+                            emprendedor.nombre + " " + emprendedor.apellido;
+
+                        const correo = document.createElement("p");
+                        correo.textContent = "Correo: " + emprendedor.correo;
+
+                        const telefono = document.createElement("p");
+                        telefono.textContent =
+                            "Teléfono: " + (emprendedor.telefono || "No registrado");
+
+                        tarjeta.append(nombre, correo, telefono);
+                        lista.appendChild(tarjeta);
+                    });
+
+                } catch (error) {
+                    lista.textContent = error.message;
+                }
+            }
+
+            async function cargarFerias() {
+
+                const lista = document.getElementById("listaFerias");
+
+                try {
+                    const ferias = await solicitar("/Feria");
+
+                    document.getElementById("totalFerias").textContent =
+                        ferias.length;
+
+                    if (ferias.length === 0) {
+                        lista.textContent = "Todavía no hay ferias registradas.";
+                        return;
+                    }
+
+                    lista.innerHTML = "";
+
+                    ferias.forEach(feria => {
+
+                        const tarjeta = document.createElement("div");
+                        tarjeta.className = "elemento";
+
+                        const titulo = document.createElement("h3");
+                        titulo.textContent = feria.nombre;
+
+                        const descripcion = document.createElement("p");
+                        descripcion.textContent = feria.descripcion;
+
+                        const municipio = document.createElement("p");
+                        municipio.textContent = "Municipio: " + feria.municipio;
+
+                        const lugar = document.createElement("p");
+                        lugar.textContent = "Lugar: " + feria.lugar;
+
+                        const inicio = document.createElement("p");
+                        inicio.textContent =
+                            "Inicio: " + new Date(feria.fechaInicio).toLocaleString();
+
+                        const fin = document.createElement("p");
+                        fin.textContent =
+                            "Finalización: " + new Date(feria.fechaFin).toLocaleString();
+
+                        const estado = document.createElement("span");
+                        estado.className = "estado";
+                        estado.textContent = feria.estado ? "Activa" : "Inactiva";
+
+                        const acciones = document.createElement("div");
+                        acciones.className = "acciones";
+
+                        const editar = document.createElement("button");
+                        editar.className = "boton";
+                        editar.textContent = "Editar";
+                        editar.onclick = () => prepararEdicion(feria);
+
+                        const eliminar = document.createElement("button");
+                        eliminar.className = "boton peligro";
+                        eliminar.textContent = "Eliminar";
+                        eliminar.onclick = () => eliminarFeria(feria.id);
+
+                        acciones.append(editar, eliminar);
+
+                        tarjeta.append(
+                            titulo,
+                            descripcion,
+                            municipio,
+                            lugar,
+                            inicio,
+                            fin,
+                            estado,
+                            acciones
+                        );
+
+                        lista.appendChild(tarjeta);
+                    });
+
+                } catch (error) {
+                    lista.textContent = error.message;
+                }
+            }
+
+            function prepararEdicion(feria) {
+
+                feriaEditando = feria.id;
+
+                document.getElementById("tituloFormulario").textContent =
+                    "Editar feria";
+
+                document.getElementById("btnGuardar").textContent =
+                    "Guardar cambios";
+
+                document.getElementById("nombre").value = feria.nombre;
+                document.getElementById("descripcion").value = feria.descripcion;
+                document.getElementById("fechaInicio").value =
+                    convertirFecha(feria.fechaInicio);
+                document.getElementById("fechaFin").value =
+                    convertirFecha(feria.fechaFin);
+                document.getElementById("lugar").value = feria.lugar;
+                document.getElementById("municipio").value = feria.municipio;
+                document.getElementById("estado").value = String(feria.estado);
+
+                document.getElementById("mensajeFeria").textContent = "";
+
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            }
+
+            function convertirFecha(fecha) {
+
+                const valor = new Date(fecha);
+
+                const ajustar = new Date(
+                    valor.getTime() - valor.getTimezoneOffset() * 60000
+                );
+
+                return ajustar.toISOString().slice(0, 16);
+            }
+
+            function limpiarFormulario() {
+
+                document.getElementById("formularioFeria").reset();
+
+                feriaEditando = null;
+
+                document.getElementById("tituloFormulario").textContent =
+                    "Registrar nueva feria";
+
+                document.getElementById("btnGuardar").textContent =
+                    "Registrar feria";
+
+                document.getElementById("mensajeFeria").textContent = "";
+            }
+
+            document.getElementById("formularioFeria")
+                .addEventListener("submit", async function(evento) {
+
+                    evento.preventDefault();
+
+                    const mensaje = document.getElementById("mensajeFeria");
+
+                    const datos = {
+                        nombre: document.getElementById("nombre").value.trim(),
+                        descripcion: document.getElementById("descripcion").value.trim(),
+                        fechaInicio: document.getElementById("fechaInicio").value,
+                        fechaFin: document.getElementById("fechaFin").value,
+                        lugar: document.getElementById("lugar").value.trim(),
+                        municipio: document.getElementById("municipio").value.trim(),
+                        estado: document.getElementById("estado").value === "true"
+                    };
+
+                    if (new Date(datos.fechaFin) <= new Date(datos.fechaInicio)) {
+                        mensaje.textContent =
+                            "La fecha de finalización debe ser posterior a la de inicio.";
+                        return;
+                    }
+
+                    try {
+
+                        if (feriaEditando === null) {
+
+                            await solicitar("/Feria", {
+                                method: "POST",
+                                body: JSON.stringify(datos)
+                            });
+
+                            mensaje.textContent = "¡Feria registrada correctamente!";
+
+                        } else {
+
+                            await solicitar("/Feria/" + feriaEditando, {
+                                method: "PUT",
+                                body: JSON.stringify(datos)
+                            });
+
+                            mensaje.textContent = "¡Feria actualizada correctamente!";
+                        }
+
+                        limpiarFormulario();
+                        await cargarFerias();
+
+                    } catch (error) {
+                        mensaje.textContent = error.message;
+                    }
+                });
+
+            async function eliminarFeria(id) {
+
+                if (!confirm("¿Estás segura de que deseas eliminar esta feria?")) {
+                    return;
+                }
+
+                try {
+
+                    await solicitar("/Feria/" + id, {
+                        method: "DELETE"
+                    });
+
+                    alert("Feria eliminada correctamente.");
+
+                    await cargarFerias();
+
+                } catch (error) {
+                    alert(error.message);
+                }
+            }
+
+            function cerrarSesion() {
+
+                localStorage.removeItem("tokenFeriaOriente");
+                localStorage.removeItem("tipoCuenta");
+
+                window.location.href = "login.html";
+            }
+
+            async function iniciarPanel() {
+                await cargarEmprendedores();
+                await cargarFerias();
+            }
+
+            if (token && tipoCuenta === "administrador") {
+                iniciarPanel();
+            }
+    </script>
+
+</body>
+</html>

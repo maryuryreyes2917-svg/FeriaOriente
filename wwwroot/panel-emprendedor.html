@@ -1,0 +1,585 @@
+﻿
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel del emprendedor | FeriaOriente</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: #fff7f7;
+            color: #604b52;
+        }
+
+        header {
+            background: #f4cbd2;
+            padding: 22px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+            header h1 {
+                color: #9b6575;
+            }
+
+            header button, .boton {
+                background: #c98799;
+                color: white;
+                border: none;
+                border-radius: 9px;
+                padding: 11px 18px;
+                cursor: pointer;
+                text-decoration: none;
+                display: inline-block;
+                margin-top: 12px;
+            }
+
+                header button:hover, .boton:hover {
+                    background: #b87588;
+                }
+
+        .boton-retirar {
+            background: #a66d7d;
+            margin-top: 15px;
+        }
+
+            .boton-retirar:hover {
+                background: #895466;
+            }
+
+        .contenedor {
+            max-width: 1150px;
+            margin: 35px auto;
+            padding: 0 20px;
+        }
+
+        .bienvenida {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 18px #a66d7d18;
+        }
+
+        h2 {
+            color: #a66d7d;
+            margin-bottom: 12px;
+        }
+
+        .resumen {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .tarjeta {
+            background: white;
+            padding: 23px;
+            border-radius: 15px;
+            box-shadow: 0 5px 18px #a66d7d18;
+        }
+
+            .tarjeta h3 {
+                color: #a66d7d;
+                margin-bottom: 10px;
+            }
+
+        .numero {
+            font-size: 30px;
+            font-weight: bold;
+            color: #c98799;
+        }
+
+        .seccion {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 22px;
+            box-shadow: 0 5px 18px #a66d7d18;
+        }
+
+        .lista {
+            display: grid;
+            gap: 12px;
+        }
+
+        .elemento {
+            background: #fff7f7;
+            border: 1px solid #f1dce1;
+            padding: 18px;
+            border-radius: 10px;
+        }
+
+            .elemento strong {
+                color: #9b6575;
+            }
+
+            .elemento p {
+                margin-top: 8px;
+                line-height: 1.5;
+            }
+
+        .mensaje {
+            color: #927c83;
+            padding: 10px 0;
+        }
+
+        .estado {
+            display: inline-block;
+            background: #f4cbd2;
+            color: #895466;
+            padding: 5px 12px;
+            border-radius: 20px;
+            margin-top: 10px;
+            font-size: 13px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #927c83;
+        }
+
+        @media(max-width: 600px) {
+            header {
+                padding: 20px;
+            }
+
+            .contenedor {
+                margin: 20px auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>FeriaOriente</h1>
+        <button onclick="cerrarSesion()">Cerrar sesión</button>
+    </header>
+
+    <main class="contenedor">
+
+        <section class="bienvenida">
+            <h2>Panel del emprendedor</h2>
+            <p>
+                Administra la información de tu emprendimiento, tus productos
+                y servicios, y participa en las ferias del Oriente Antioqueño.
+            </p>
+
+            <a class="boton" href="gestion-productos-servicios.html">
+                Gestionar productos y servicios
+            </a>
+        </section>
+
+        <section class="resumen">
+
+            <article class="tarjeta">
+                <h3>Mi emprendimiento</h3>
+                <p>Consulta la información de tu perfil.</p>
+                <a class="boton" href="#perfil">Ver perfil</a>
+            </article>
+
+            <article class="tarjeta">
+                <h3>Mis productos</h3>
+                <p class="numero" id="totalProductos">—</p>
+                <a class="boton" href="#productos">Ver productos</a>
+            </article>
+
+            <article class="tarjeta">
+                <h3>Mis servicios</h3>
+                <p class="numero" id="totalServicios">—</p>
+                <a class="boton" href="#servicios">Ver servicios</a>
+            </article>
+
+            <article class="tarjeta">
+                <h3>Mis ferias</h3>
+                <p class="numero" id="totalFerias">—</p>
+                <a class="boton" href="#ferias">Ver ferias</a>
+            </article>
+
+        </section>
+
+        <section class="seccion" id="perfil">
+            <h2>Mi emprendimiento</h2>
+            <div id="datosPerfil" class="mensaje">
+                Cargando información...
+            </div>
+        </section>
+
+        <section class="seccion" id="productos">
+            <h2>Mis productos</h2>
+            <div id="listaProductos" class="lista">
+                <p class="mensaje">Cargando productos...</p>
+            </div>
+        </section>
+
+        <section class="seccion" id="servicios">
+            <h2>Mis servicios</h2>
+            <div id="listaServicios" class="lista">
+                <p class="mensaje">Cargando servicios...</p>
+            </div>
+        </section>
+
+        <section class="seccion" id="ferias">
+            <h2>Ferias en las que estoy inscrito</h2>
+            <p class="mensaje">
+                Aquí puedes consultar las ferias en las que participa tu emprendimiento.
+            </p>
+
+            <div id="listaFerias" class="lista">
+                <p class="mensaje">Cargando ferias...</p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>FeriaOriente · Talento y emprendimiento regional</footer>
+
+    <script>
+                const token = localStorage.getItem("tokenFeriaOriente");
+
+                function cerrarSesion() {
+                    localStorage.removeItem("tokenFeriaOriente");
+                    localStorage.removeItem("tipoCuenta");
+                    window.location.href = "login.html";
+                }
+
+                async function consultar(url, metodo = "GET") {
+                    const respuesta = await fetch(url, {
+                        method: metodo,
+                        headers: {
+                            "Authorization": "Bearer " + token
+                        }
+                    });
+
+                    if (!respuesta.ok) {
+                        throw new Error("No se pudo consultar la información.");
+                    }
+
+                    const texto = await respuesta.text();
+
+                    return texto ? JSON.parse(texto) : null;
+                }
+
+                function crearElemento(etiqueta, texto, clase) {
+                    const elemento = document.createElement(etiqueta);
+                    elemento.textContent = texto;
+
+                    if (clase) {
+                        elemento.className = clase;
+                    }
+
+                    return elemento;
+                }
+
+                function obtener(valor1, valor2) {
+                    return valor1 ?? valor2;
+                }
+
+                function formatearFecha(fecha) {
+                    if (!fecha) return "No especificada";
+
+                    const fechaConvertida = new Date(fecha);
+
+                    if (isNaN(fechaConvertida.getTime())) {
+                        return "No especificada";
+                    }
+
+                    return fechaConvertida.toLocaleString("es-CO", {
+                        dateStyle: "medium",
+                        timeStyle: "short"
+                    });
+                }
+
+                function mostrarLista(contenedor, datos) {
+                    contenedor.innerHTML = "";
+
+                    if (!Array.isArray(datos) || datos.length === 0) {
+                        contenedor.appendChild(
+                            crearElemento(
+                                "p",
+                                "Todavía no hay registros disponibles.",
+                                "mensaje"
+                            )
+                        );
+                        return;
+                    }
+
+                    datos.forEach(item => {
+                        const elemento = document.createElement("article");
+                        elemento.className = "elemento";
+
+                        elemento.appendChild(
+                            crearElemento(
+                                "strong",
+                                obtener(item.nombre, item.Nombre) || "Sin nombre"
+                            )
+                        );
+
+                        elemento.appendChild(
+                            crearElemento(
+                                "p",
+                                obtener(item.descripcion, item.Descripcion) || ""
+                            )
+                        );
+
+                        contenedor.appendChild(elemento);
+                    });
+                }
+
+                function mostrarFerias(datos) {
+                    const contenedor = document.getElementById("listaFerias");
+                    contenedor.innerHTML = "";
+
+                    if (!Array.isArray(datos) || datos.length === 0) {
+                        contenedor.appendChild(
+                            crearElemento(
+                                "p",
+                                "Todavía no estás inscrito en ninguna feria.",
+                                "mensaje"
+                            )
+                        );
+                        return;
+                    }
+
+                    datos.forEach(feria => {
+                        const elemento = document.createElement("article");
+                        elemento.className = "elemento";
+
+                        const id = obtener(
+                            feria.id,
+                            obtener(feria.feriaId, feria.Id)
+                        );
+
+                        elemento.appendChild(
+                            crearElemento(
+                                "h3",
+                                obtener(feria.nombre, feria.Nombre) || "Feria sin nombre"
+                            )
+                        );
+
+                        elemento.appendChild(
+                            crearElemento(
+                                "p",
+                                obtener(feria.descripcion, feria.Descripcion) ||
+                                "Sin descripción."
+                            )
+                        );
+
+                        elemento.appendChild(
+                            crearElemento(
+                                "p",
+                                "Municipio: " +
+                                (obtener(feria.municipio, feria.Municipio) ||
+                                "No especificado")
+                            )
+                        );
+
+                        elemento.appendChild(
+                            crearElemento(
+                                "p",
+                                "Lugar: " +
+                                (obtener(feria.lugar, feria.Lugar) ||
+                                "No especificado")
+                            )
+                        );
+
+                        elemento.appendChild(
+                            crearElemento(
+                                "p",
+                                "Fecha de inicio: " +
+                                formatearFecha(
+                                    obtener(feria.fechaInicio, feria.FechaInicio)
+                                )
+                            )
+                        );
+
+                        elemento.appendChild(
+                            crearElemento(
+                                "p",
+                                "Fecha de finalización: " +
+                                formatearFecha(
+                                    obtener(feria.fechaFin, feria.FechaFin)
+                                )
+                            )
+                        );
+
+                        elemento.appendChild(
+                            crearElemento("span", "Inscripción registrada", "estado")
+                        );
+
+                        if (id != null) {
+                            const boton = crearElemento(
+                                "button",
+                                "Retirarme de esta feria",
+                                "boton boton-retirar"
+                            );
+
+                            boton.type = "button";
+
+                            boton.addEventListener("click", () => {
+                                retirarseFeria(id);
+                            });
+
+                            elemento.appendChild(boton);
+                        }
+
+                        contenedor.appendChild(elemento);
+                    });
+                }
+
+                async function retirarseFeria(id) {
+                    const confirmar = confirm(
+                        "¿Estás seguro de que deseas retirarte de esta feria?"
+                    );
+
+                    if (!confirmar) return;
+
+                    try {
+                        await consultar(
+                            `/api/Feria/retirarse/${id}`,
+                            "DELETE"
+                        );
+
+                        alert("Te has retirado de la feria correctamente.");
+
+                        cargarFerias();
+
+                    } catch (error) {
+                        alert("No fue posible retirarte de la feria.");
+                    }
+                }
+
+                async function cargarPerfil() {
+                    try {
+                        const perfil = await consultar(
+                            "/api/Emprendimiento/mi-emprendimiento"
+                        );
+
+                        const contenedor = document.getElementById("datosPerfil");
+                        contenedor.innerHTML = "";
+
+                        const elemento = document.createElement("article");
+                        elemento.className = "elemento";
+
+                        elemento.appendChild(
+                            crearElemento(
+                                "strong",
+                                obtener(perfil.nombre, perfil.Nombre) ||
+                                "Emprendimiento"
+                            )
+                        );
+
+                        elemento.appendChild(
+                            crearElemento(
+                                "p",
+                                obtener(perfil.descripcion, perfil.Descripcion) ||
+                                "Sin descripción."
+                            )
+                        );
+
+                        elemento.appendChild(
+                            crearElemento(
+                                "p",
+                                "Municipio: " +
+                                (obtener(perfil.municipio, perfil.Municipio) ||
+                                "No especificado")
+                            )
+                        );
+
+                        contenedor.appendChild(elemento);
+
+                    } catch {
+                        document.getElementById("datosPerfil").textContent =
+                            "No fue posible cargar el perfil.";
+                    }
+                }
+
+                async function cargarProductos() {
+                    try {
+                        const productos = await consultar(
+                            "/api/Emprendimiento/mis-productos"
+                        );
+
+                        document.getElementById("totalProductos").textContent =
+                            Array.isArray(productos) ? productos.length : 0;
+
+                        mostrarLista(
+                            document.getElementById("listaProductos"),
+                            productos
+                        );
+
+                    } catch {
+                        document.getElementById("listaProductos").textContent =
+                            "No fue posible cargar los productos.";
+                    }
+                }
+
+                async function cargarServicios() {
+                    try {
+                        const servicios = await consultar(
+                            "/api/Emprendimiento/mis-servicios"
+                        );
+
+                        document.getElementById("totalServicios").textContent =
+                            Array.isArray(servicios) ? servicios.length : 0;
+
+                        mostrarLista(
+                            document.getElementById("listaServicios"),
+                            servicios
+                        );
+
+                    } catch {
+                        document.getElementById("listaServicios").textContent =
+                            "No fue posible cargar los servicios.";
+                    }
+                }
+
+                async function cargarFerias() {
+                    try {
+                        const ferias = await consultar("/api/Feria/mis-ferias");
+
+                        document.getElementById("totalFerias").textContent =
+                            Array.isArray(ferias) ? ferias.length : 0;
+
+                        mostrarFerias(ferias);
+
+                    } catch {
+                        document.getElementById("listaFerias").textContent =
+                            "No fue posible cargar las ferias inscritas.";
+                    }
+                }
+
+                async function cargarPanel() {
+                    if (!token) {
+                        alert("Debes iniciar sesión para ingresar.");
+                        window.location.href = "login.html";
+                        return;
+                    }
+
+                    await cargarPerfil();
+                    await cargarProductos();
+                    await cargarServicios();
+                    await cargarFerias();
+                }
+
+                cargarPanel();
+    </script>
+
+</body>
+</html>
+

@@ -1,0 +1,259 @@
+﻿
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar sesión | FeriaOriente</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #fff7f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .contenedor {
+            width: 100%;
+            max-width: 430px;
+            background: white;
+            border-radius: 22px;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(160, 100, 120, 0.13);
+        }
+
+        .encabezado {
+            background: linear-gradient(135deg, #f4cbd2, #f8e1e3);
+            padding: 35px 25px;
+            text-align: center;
+        }
+
+            .encabezado h1 {
+                color: #9b6575;
+                font-size: 29px;
+                margin-bottom: 8px;
+            }
+
+            .encabezado p {
+                color: #704c57;
+                font-size: 14px;
+            }
+
+        .formulario {
+            padding: 30px;
+        }
+
+            .formulario h2 {
+                color: #9b6575;
+                margin-bottom: 22px;
+                text-align: center;
+            }
+
+        label {
+            display: block;
+            color: #704c57;
+            font-weight: 600;
+            margin-bottom: 7px;
+            margin-top: 17px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #ebcbd2;
+            border-radius: 10px;
+            outline: none;
+            font-size: 15px;
+            background: #fffafa;
+        }
+
+            input:focus, select:focus {
+                border-color: #c98799;
+            }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 25px;
+            border: none;
+            border-radius: 10px;
+            background: #c98799;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+            button:hover {
+                background: #b87588;
+            }
+
+            button:disabled {
+                opacity: 0.7;
+                cursor: not-allowed;
+            }
+
+        .mensaje {
+            margin-top: 15px;
+            text-align: center;
+            font-size: 14px;
+            color: #704c57;
+        }
+
+        .enlaces {
+            text-align: center;
+            margin-top: 22px;
+            line-height: 2;
+        }
+
+            .enlaces a {
+                color: #b87588;
+                text-decoration: none;
+                font-weight: 600;
+            }
+
+                .enlaces a:hover {
+                    text-decoration: underline;
+                }
+    </style>
+</head>
+
+<body>
+
+    <div class="contenedor">
+
+        <div class="encabezado">
+            <h1>FeriaOriente</h1>
+            <p>El talento de nuestra región merece ser conocido.</p>
+        </div>
+
+        <div class="formulario">
+
+            <h2>Iniciar sesión</h2>
+
+            <form id="formularioLogin">
+
+                <label for="tipoCuenta">Tipo de cuenta</label>
+                <select id="tipoCuenta" required>
+                    <option value="emprendedor">Emprendedor</option>
+                    <option value="administrador">Administrador</option>
+                </select>
+
+                <label for="correo">Correo electrónico</label>
+                <input type="email"
+                       id="correo"
+                       placeholder="Ingresa tu correo"
+                       required>
+
+                <label for="contrasena">Contraseña</label>
+                <input type="password"
+                       id="contrasena"
+                       placeholder="Ingresa tu contraseña"
+                       required>
+
+                <button type="submit" id="btnIngresar">
+                    Iniciar sesión
+                </button>
+
+            </form>
+
+            <p class="mensaje" id="mensaje"></p>
+
+            <div class="enlaces">
+                <p>
+                    ¿No tienes una cuenta?
+                    <a href="registro.html">Regístrate aquí</a>
+                </p>
+
+                <p>
+                    <a href="index.html">Volver al inicio</a>
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+                const formulario = document.getElementById("formularioLogin");
+                const mensaje = document.getElementById("mensaje");
+                const boton = document.getElementById("btnIngresar");
+
+                formulario.addEventListener("submit", async function (evento) {
+
+                    evento.preventDefault();
+
+                    const correo = document.getElementById("correo").value.trim();
+                    const contrasena = document.getElementById("contrasena").value;
+                    const tipoCuenta = document.getElementById("tipoCuenta").value;
+
+                    mensaje.textContent = "Verificando información...";
+                    boton.disabled = true;
+
+                    try {
+
+                        const respuesta = await fetch(
+                            "https://localhost:7144/api/Auth/iniciar-sesion",
+                            {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json"
+                                },
+                                body: JSON.stringify({
+                                    correo: correo,
+                                    contrasena: contrasena,
+                                    tipoCuenta: tipoCuenta
+                                })
+                            }
+                        );
+
+                        const datos = await respuesta.json();
+
+                        if (!respuesta.ok) {
+                            throw new Error(
+                                datos.mensaje || datos.message ||
+                                "Credenciales incorrectas."
+                            );
+                        }
+
+                        const token = datos.token || datos.Token;
+
+                        if (!token) {
+                            throw new Error("No se recibió el token de acceso.");
+                        }
+
+                        localStorage.setItem("tokenFeriaOriente", token);
+                        localStorage.setItem("tipoCuenta", tipoCuenta);
+
+                        mensaje.textContent = "¡Inicio de sesión exitoso!";
+
+                        const destino = tipoCuenta === "administrador"
+                            ? "panel-administrador.html"
+                            : "panel-emprendedor.html";
+
+                        setTimeout(function () {
+                            window.location.href = destino;
+                        }, 1000);
+
+                    } catch (error) {
+
+                        mensaje.textContent = error.message;
+                        boton.disabled = false;
+
+                    }
+
+                });
+    </script>
+
+</body>
+</html>
